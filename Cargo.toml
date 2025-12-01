@@ -1,5 +1,5 @@
 [package]
-name = "advent_of_code_rust_runner"
+name = "advent-of-code-rust-runner"
 version = "0.2.0"
 edition = "2024"
 authors = ["Chris Paterson <chris@chrispaterson.co.uk>"]
@@ -7,6 +7,7 @@ description = "Rust framework for running Advent of Code solutions"
 readme = "README.md"
 license-file = "LICENSE"
 repository = "https://github.com/ThePants999/advent-of-code-rust-runner"
+categories = ["development-tools"]
 
 [dependencies]
 log = "0.4"

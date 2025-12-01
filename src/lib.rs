@@ -92,10 +92,10 @@ impl Runner {
 
     fn run_inner(&self, args: RunnerArgs) -> Result<()> {
         let max_day = self.max_day()?;
-        if let Some(day) = args.specific_day {
-            if day == 0 || day > max_day {
-                return Err(anyhow!("Day must be between 1 and {}", max_day));
-            }
+        if let Some(day) = args.specific_day
+            && (day == 0 || day > max_day)
+        {
+            return Err(anyhow!("Day must be between 1 and {}", max_day));
         }
         if args.num_runs == 0 {
             return Err(anyhow!("Stats runs must be at least 1"));
@@ -120,7 +120,7 @@ impl Runner {
         let offset = UtcOffset::from_hms(-5, 0, 0).ok()?;
         let now = OffsetDateTime::now_utc().to_offset(offset);
         if now.year().to_string() == self.env.year && now.month() == Month::December {
-            let today = now.day() as u8;
+            let today = now.day();
             (today <= max_day).then_some(today)
         } else {
             None
@@ -199,11 +199,11 @@ impl Runner {
         }
 
         // Skip if not published yet (same year, December, AoC day not reached)
-        if let Some(today) = self.current_aoc_day() {
-            if today < day_impl.day() {
-                println!("Skipping - day not published yet");
-                return Ok(RunStats::default());
-            }
+        if let Some(today) = self.current_aoc_day()
+            && today < day_impl.day()
+        {
+            println!("Skipping - day not published yet");
+            return Ok(RunStats::default());
         }
 
         if !args.skip_tests {

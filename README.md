@@ -74,7 +74,7 @@ impl DayImplementation for Day01 {
 ```
 
 5) In `main`, register your days and run the runner:
-```rust
+```rust,ignore
 use advent_of_code_rust_runner::{Runner, Day};
 use env_logger;
 

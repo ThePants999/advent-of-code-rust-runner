@@ -26,20 +26,47 @@ impl<O: std::fmt::Display + Eq> From<ExecutionResult<O>> for DayResult {
     }
 }
 
+pub(crate) enum TestCaseResult {
+    NotExecuted,
+    Passed(Duration),
+    Failed(String, String)
+}
+
 pub struct TestResult {
-    pub(crate) part_1_correct: bool,
-    pub(crate) part_1_time: Duration,
-    pub(crate) part_2_correct: bool,
-    pub(crate) part_2_time: Duration
+    pub(crate) part1: TestCaseResult,
+    pub(crate) part2: TestCaseResult
 }
 
 impl TestResult {
-    fn from_execution_result<O: std::fmt::Display + Eq>(result: ExecutionResult<O>, expected_part_1: O, expected_part_2: O) -> Self {
+    fn not_executed() -> Self {
         TestResult {
-            part_1_correct: result.part_1_result == expected_part_1,
-            part_1_time: result.part_1_time,
-            part_2_correct: result.part_2_result == expected_part_2,
-            part_2_time: result.part_2_time,
+            part1: TestCaseResult::NotExecuted,
+            part2: TestCaseResult::NotExecuted
+        }
+    }
+
+    fn from_execution_result<O: std::fmt::Display + Eq>(result: ExecutionResult<O>, expected_part_1: Option<O>, expected_part_2: Option<O>) -> Self {
+        let part1 = if let Some(expected) = expected_part_1 {
+            if result.part_1_result == expected {
+                TestCaseResult::Passed(result.part_1_time)
+            } else {
+                TestCaseResult::Failed(expected.to_string(), result.part_1_result.to_string())
+            }
+        } else {
+            TestCaseResult::NotExecuted
+        };
+        let part2 = if let Some(expected) = expected_part_2 {
+            if result.part_2_result == expected {
+                TestCaseResult::Passed(result.part_2_time)
+            } else {
+                TestCaseResult::Failed(expected.to_string(), result.part_2_result.to_string())
+            }
+        } else {
+            TestCaseResult::NotExecuted
+        };
+        TestResult {
+            part1,
+            part2,
         }
     }
 }
@@ -49,9 +76,9 @@ pub trait DayImplementation {
     type Context<'a>;
 
     fn day(&self) -> u8;
-    fn example_input(&self) -> &'static str;
-    fn example_part_1_result(&self) -> Self::Output<'static>;
-    fn example_part_2_result(&self) -> Self::Output<'static>;
+    fn example_input(&self) -> Option<&'static str> { None }
+    fn example_part_1_result(&self) -> Option<Self::Output<'static>> { None }
+    fn example_part_2_result(&self) -> Option<Self::Output<'static>> { None }
 
     fn execute_part_1<'a>(&self, input: &'a str) -> Result<(Self::Output<'a>, Self::Context<'a>)>;
     fn execute_part_2<'a>(&self, input: &'a str, context: Self::Context<'a>) -> Result<Self::Output<'a>>;
@@ -90,8 +117,18 @@ impl<T: DayImplementation> Day for T {
 
     fn test_day(&self) -> Result<TestResult> {
         log::debug!("Running tests for day {}", self.day());
-        let result = self.run_with_input(DayImplementation::example_input(self))?;
-        Ok(TestResult::from_execution_result(result, DayImplementation::example_part_1_result(self), DayImplementation::example_part_2_result(self)))
+        if let Some(example_input) = DayImplementation::example_input(self) {
+            log::debug!("Example input found for day {}", self.day());
+            let result = self.run_with_input(example_input)?;
+            Ok(TestResult::from_execution_result(
+                result,
+                DayImplementation::example_part_1_result(self),
+                DayImplementation::example_part_2_result(self)
+            ))
+        } else {
+            log::debug!("No example input for day {}, skipping tests", self.day());
+            Ok(TestResult::not_executed())
+        }
     }
 
     fn execute_day(&self, input: &str) -> Result<DayResult> {

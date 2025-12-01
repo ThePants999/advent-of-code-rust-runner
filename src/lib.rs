@@ -22,10 +22,10 @@ pub fn run_all(year: &str, implementations: &[Box<dyn Day>]) {
         };
         match day_impl.test_day() {
             Ok(test_result) if test_result.part_1_correct && test_result.part_2_correct => {
-                log::warn!("Day {}: tests passed, part 1 in {:?}, part 2 in {:?}", day_impl.day(), test_result.part_1_time, test_result.part_2_time);
+                log::debug!("Day {}: tests passed, part 1 in {:?}, part 2 in {:?}", day_impl.day(), test_result.part_1_time, test_result.part_2_time);
                 match day_impl.execute_day(input.as_str()) {
                     Ok(result) => {
-                        log::warn!(
+                        log::info!(
                             "Day {}: part 1 result: {} (took {:?}), part 2 result: {} (took {:?})",
                             day_impl.day(),
                             result.part_1_result,
@@ -40,7 +40,7 @@ pub fn run_all(year: &str, implementations: &[Box<dyn Day>]) {
                 }
             }
             Ok(test_result) => {
-                log::error!(
+                log::warn!(
                     "Day {}: tests failed! Part 1 correct: {}, part 2 correct: {}",
                     day_impl.day(),
                     test_result.part_1_correct,

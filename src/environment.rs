@@ -22,7 +22,7 @@ impl AOCEnvironment {
         log::debug!("Current directory: {:?}", current_dir);
         let inputs_dir = current_dir.join(INPUT_DIRNAME);
         if !inputs_dir.try_exists().context("Failed to check if inputs directory exists")? {
-            log::info!("Creating inputs directory at {:?}", inputs_dir);
+            log::debug!("Creating inputs directory at {:?}", inputs_dir);
             std::fs::create_dir(&inputs_dir).context("Failed to create inputs directory")?;
         }
         log::debug!("Using inputs directory at {:?}", inputs_dir);
@@ -31,12 +31,12 @@ impl AOCEnvironment {
         let session_value: String;
         log::debug!("Checking for session file {:?}", session_filename);
         if !session_filename.try_exists().context("Failed to check if session file exists")? {
-            log::info!("Session file not found, prompting for session cookie value");
+            log::debug!("Session file not found, prompting for session cookie value");
             println!("In order to download the inputs from the Advent of Code website, this program requires your session cookie.");
             println!("Please log into the Advent of Code website, then check your browser cookies and enter the value of the 'session' cookie now.");
             let mut input = String::new();
             io::stdin().read_line(&mut input).context("Failed to read session cookie from stdin")?;
-            log::info!("Session cookie provided, saving to file");
+            log::debug!("Session cookie provided, saving to file");
             session_value = input.trim().to_string();
             std::fs::write(&session_filename, &session_value).context("Failed to write session file")?;
         } else {
@@ -61,7 +61,7 @@ impl AOCEnvironment {
             return Ok(input);
         }
 
-        log::info!("Input file not found, fetching from Advent of Code website");
+        log::debug!("Input file not found, fetching from Advent of Code website");
         let url = format!("{}/{}/day/{}/input", AOC_BASE_URL, self.year, day);
         let response = self.http_client
             .get(&url)
@@ -74,7 +74,7 @@ impl AOCEnvironment {
         }
         let input = response.text().context("Failed to read response text")?;
 
-        log::info!("Saving input to {:?}", input_filename);
+        log::debug!("Saving input to {:?}", input_filename);
         std::fs::write(&input_filename, &input).context("Failed to write input file")?;
 
         Ok(input)

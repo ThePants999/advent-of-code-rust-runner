@@ -61,13 +61,13 @@ pub trait DayImplementation {
         let start_part_1 = Instant::now();
         let (part_1_result, context) = self.execute_part_1(input)?;
         let part_1_time = start_part_1.elapsed();
-        log::info!("Part 1 completed in {:?}, result: {}", part_1_time, part_1_result);
+        log::debug!("Part 1 completed in {:?}, result: {}", part_1_time, part_1_result);
 
         log::debug!("Starting part 2 for day {}", self.day());
         let start_part_2 = Instant::now();
         let part_2_result = self.execute_part_2(input, context)?;
         let part_2_time = start_part_2.elapsed();
-        log::info!("Part 2 completed in {:?}, result: {}", part_2_time, part_2_result);
+        log::debug!("Part 2 completed in {:?}, result: {}", part_2_time, part_2_result);
 
         Ok(ExecutionResult {
             part_1_result,
@@ -89,13 +89,13 @@ impl<T: DayImplementation> Day for T {
     fn day(&self) -> u8 { DayImplementation::day(self) }
 
     fn test_day(&self) -> Result<TestResult> {
-        log::info!("Running tests for day {}", self.day());
+        log::debug!("Running tests for day {}", self.day());
         let result = self.run_with_input(DayImplementation::example_input(self))?;
         Ok(TestResult::from_execution_result(result, DayImplementation::example_part_1_result(self), DayImplementation::example_part_2_result(self)))
     }
 
     fn execute_day(&self, input: &str) -> Result<DayResult> {
-        log::info!("Executing day {} with actual input", self.day());
+        log::debug!("Executing day {} with actual input", self.day());
         Ok(DayResult::from(self.run_with_input(input)?))
     }
 }

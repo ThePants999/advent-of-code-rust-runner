@@ -1,6 +1,8 @@
+#![doc = include_str!("../README.md")]
+
 use std::{process, time::Duration};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::anyhow;
 use clap::{CommandFactory, Parser};
 use time::{Month, OffsetDateTime, UtcOffset};
 
@@ -8,6 +10,7 @@ mod day;
 mod environment;
 
 pub use day::{Day, DayImplementation};
+pub use anyhow::{Context, Result};
 use day::TestCaseResult;
 
 const DAY_SEPARATOR: &str = "-----------------------";

@@ -1,6 +1,6 @@
 [package]
 name = "advent_of_code_rust_runner"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["Chris Paterson <chris@chrispaterson.co.uk>"]
 description = "Rust framework for running Advent of Code solutions"

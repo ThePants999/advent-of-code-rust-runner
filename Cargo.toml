@@ -10,3 +10,4 @@ repository = "https://github.com/ThePants999/advent-of-code-rust-runner"
 
 [dependencies]
 log = "0.4"
+anyhow = "1.0"

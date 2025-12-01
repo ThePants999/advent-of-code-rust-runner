@@ -82,7 +82,7 @@ pub trait Day {
     fn day(&self) -> u8;
 
     fn test_day(&self) -> Result<TestResult>;
-    fn execute_day(&self) -> Result<DayResult>;
+    fn execute_day(&self, input: &str) -> Result<DayResult>;
 }
 
 impl<T: DayImplementation> Day for T {
@@ -94,9 +94,7 @@ impl<T: DayImplementation> Day for T {
         Ok(TestResult::from_execution_result(result, DayImplementation::example_part_1_result(self), DayImplementation::example_part_2_result(self)))
     }
 
-    fn execute_day(&self) -> Result<DayResult> {
-        // Temp hack before we implement input fetching
-        let input = self.example_input();
+    fn execute_day(&self, input: &str) -> Result<DayResult> {
         log::info!("Executing day {} with actual input", self.day());
         Ok(DayResult::from(self.run_with_input(input)?))
     }
